@@ -39,15 +39,18 @@ jobs:
           echo "hash=$(sha256sum /tmp/listado.txt | cut -c1-16)" >> "$GITHUB_OUTPUT"
 
       - name: Comparar con el ultimo visto
+        id: check
         run: |
           ANTERIOR=$(cat sources/.listado_hash 2>/dev/null || echo "")
           if [ "$ANTERIOR" != "${{ steps.hash.outputs.hash }}" ]; then
-            echo "CAMBIO=1" >> "$GITHUB_ENV"
+            echo "cambio=1" >> "$GITHUB_OUTPUT"
             echo "${{ steps.hash.outputs.hash }}" > sources/.listado_hash
+          else
+            echo "cambio=0" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Abrir issue si cambio la fuente
-        if: env.CAMBIO == '1'
+        if: steps.check.outputs.cambio == '1'
         uses: actions/github-script@v7
         with:
           script: |
