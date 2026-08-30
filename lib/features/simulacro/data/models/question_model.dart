@@ -89,7 +89,7 @@ final class QuestionModel extends Question {
     final cat = json['categoria'] as String;
     String? imagen = json['imagen'] as String?;
 
-    if (imagen == null && cat == 'A-I' && _senalesAI.containsKey(numero)) {
+    if (imagen == null && cat.startsWith('A-') && _senalesAI.containsKey(numero)) {
       imagen = 'assets/senales/A-I/${_senalesAI[numero]}';
     }
 
