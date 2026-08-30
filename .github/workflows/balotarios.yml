@@ -1,0 +1,104 @@
+name: balotarios
+
+# Dos flujos separados a proposito:
+#
+#  1. vigilar-fuente  -> semanal, mira SOLO la pagina publica de gob.pe y avisa
+#     si el MTC publico algo nuevo. No descarga de portal.mtc.gob.pe, que
+#     desautoriza el acceso automatizado.
+#
+#  2. construir       -> corre cuando alguien sube un PDF a sources/pdf/.
+#     Ese "alguien" es una persona que lo descargo a mano. El CI hace el resto:
+#     parsea, valida, versiona y publica.
+
+on:
+  schedule:
+    - cron: "0 12 * * 1"
+  push:
+    paths:
+      - "sources/pdf/**"
+      - "tools/**"
+  workflow_dispatch:
+
+jobs:
+  vigilar-fuente:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Hash de la publicacion oficial
+        id: hash
+        run: |
+          URL="https://www.gob.pe/institucion/mtc/informes-publicaciones/1928110-examen-de-conocimientos-para-postulantes-a-licencias-de-conducir"
+          curl -sS --retry 2 --max-time 30 -A "simulacro-mtc/1.0 (contacto: tu@correo.pe)" "$URL" \
+            | grep -oE 'CLASE_[A-Z_]+[^"]*\.pdf|Balotario de preguntas[^<]*' \
+            | sort -u > /tmp/listado.txt
+          echo "hash=$(sha256sum /tmp/listado.txt | cut -c1-16)" >> "$GITHUB_OUTPUT"
+
+      - name: Comparar con el ultimo visto
+        run: |
+          ANTERIOR=$(cat sources/.listado_hash 2>/dev/null || echo "")
+          if [ "$ANTERIOR" != "${{ steps.hash.outputs.hash }}" ]; then
+            echo "CAMBIO=1" >> "$GITHUB_ENV"
+            echo "${{ steps.hash.outputs.hash }}" > sources/.listado_hash
+          fi
+
+      - name: Abrir issue si cambio la fuente
+        if: env.CAMBIO == '1'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: "El MTC actualizo la publicacion de balotarios",
+              body: [
+                "El listado oficial cambio respecto de la ultima revision.",
+                "",
+                "1. Revisa https://www.gob.pe/institucion/mtc/informes-publicaciones/1928110-examen-de-conocimientos-para-postulantes-a-licencias-de-conducir",
+                "2. Descarga los PDF que cambiaron y subelos a `sources/pdf/` con el nombre del codigo (`A-I.pdf`).",
+                "3. El push dispara el pipeline: parseo, validacion y publicacion.",
+              ].join("\n"),
+              labels: ["datos", "balotario"],
+            })
+
+  construir:
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r tools/requirements.txt
+
+      - name: Parsear los PDF subidos a mano
+        run: python tools/scrape_balotarios_mtc.py --local sources/pdf --out assets/balotarios --debug
+
+      - name: Validar (falla el build si los datos no sirven)
+        run: python tools/pipeline/validar.py assets/balotarios --strict
+
+      - name: Diff contra la version publicada
+        run: python tools/pipeline/diff.py assets/balotarios --salida diff.md
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: balotarios-json
+          path: |
+            assets/balotarios/balotario_*.json
+            diff.md
+
+      - name: Commit del JSON regenerado
+        run: |
+          git config user.name  "balotarios-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add assets/balotarios sources/.listado_hash || true
+          git diff --staged --quiet || git commit -m "datos: regenerar balotarios desde PDF oficiales"
+          git push

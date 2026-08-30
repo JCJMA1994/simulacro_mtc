@@ -1,0 +1,30 @@
+{
+  "fuente_oficial": "https://www.gob.pe/institucion/mtc/informes-publicaciones/1928110-examen-de-conocimientos-para-postulantes-a-licencias-de-conducir",
+  "actualizado": "2026-08-29",
+  "nota_lima": "Desde el 22/04/2026, en Lima Metropolitana el examen de clase A lo toma la MML (RM 040-2026-MTC/01.02); el balotario es el mismo del MTC.",
+  "topicos": [
+    {"codigo": "SENIALES", "nombre": "Senales y dispositivos de control de transito"},
+    {"codigo": "CIRCULACION", "nombre": "Normas de circulacion y prioridad de paso"},
+    {"codigo": "VELOCIDAD", "nombre": "Limites de velocidad"},
+    {"codigo": "INFRACCIONES", "nombre": "Infracciones, sanciones y sistema de puntos"},
+    {"codigo": "DOCUMENTOS", "nombre": "Licencias, documentacion y tramites"},
+    {"codigo": "SEGURIDAD", "nombre": "Seguridad vial y factores de riesgo"},
+    {"codigo": "MECANICA", "nombre": "Mecanica basica y mantenimiento"},
+    {"codigo": "AUXILIOS", "nombre": "Primeros auxilios"},
+    {"codigo": "AMBIENTE", "nombre": "Medio ambiente y conduccion eficiente"},
+    {"codigo": "TRANSPORTE_PERSONAS", "nombre": "Transporte de personas (profesional)"},
+    {"codigo": "MERCANCIAS", "nombre": "Transporte de mercancias y materiales peligrosos"},
+    {"codigo": "MOTOS", "nombre": "Conduccion de vehiculos menores y motocicletas"}
+  ],
+  "categorias": [
+    {"codigo": "A-I", "clase": "A", "categoria": "I", "tipo": "no profesional", "nombre": "Clase A Categoria I", "vehiculos": "M1, M2 y N1 (autos, camionetas, furgonetas de uso particular)", "preguntas_examen": 40, "minimo_aprobatorio": 35, "duracion_minutos": 40, "topicos": ["SENIALES","CIRCULACION","VELOCIDAD","INFRACCIONES","DOCUMENTOS","SEGURIDAD","MECANICA","AUXILIOS","AMBIENTE"], "pdf": "https://portal.mtc.gob.pe/transportes/terrestre/licencias/documentos/licencias/CLASE_A_CATEGOR%C3%8DA_I%20-%20NUEVO.pdf"},
+    {"codigo": "A-IIa", "clase": "A", "categoria": "II-A", "tipo": "profesional", "nombre": "Clase A Categoria II-A", "vehiculos": "Taxi y transporte de personas (M1, M2, N1, N2)", "preguntas_examen": 40, "minimo_aprobatorio": 35, "duracion_minutos": 40, "topicos": ["SENIALES","CIRCULACION","VELOCIDAD","INFRACCIONES","DOCUMENTOS","SEGURIDAD","MECANICA","AUXILIOS","AMBIENTE","TRANSPORTE_PERSONAS"], "pdf": "https://portal.mtc.gob.pe/transportes/terrestre/licencias/documentos/licencias/CLASE_A_CATEGOR%C3%8DA_IIA%20-%20NUEVO.pdf"},
+    {"codigo": "A-IIb", "clase": "A", "categoria": "II-B", "tipo": "profesional", "nombre": "Clase A Categoria II-B", "vehiculos": "M2, M3 y N2 (transporte de personas y mercancias)", "preguntas_examen": 40, "minimo_aprobatorio": 35, "duracion_minutos": 40, "topicos": ["SENIALES","CIRCULACION","VELOCIDAD","INFRACCIONES","DOCUMENTOS","SEGURIDAD","MECANICA","AUXILIOS","AMBIENTE","TRANSPORTE_PERSONAS","MERCANCIAS"], "pdf": "https://portal.mtc.gob.pe/transportes/terrestre/licencias/documentos/licencias/CLASE_A_CATEGOR%C3%8DA_IIB%20-%20NUEVO.pdf"},
+    {"codigo": "A-IIIa", "clase": "A", "categoria": "III-A", "tipo": "profesional", "nombre": "Clase A Categoria III-A", "vehiculos": "M3 y N3 (buses interprovinciales, camiones pesados)", "preguntas_examen": 40, "minimo_aprobatorio": 35, "duracion_minutos": 40, "topicos": ["SENIALES","CIRCULACION","VELOCIDAD","INFRACCIONES","DOCUMENTOS","SEGURIDAD","MECANICA","AUXILIOS","AMBIENTE","TRANSPORTE_PERSONAS","MERCANCIAS"], "pdf": "https://portal.mtc.gob.pe/transportes/terrestre/licencias/documentos/licencias/CLASE_A_CATEGOR%C3%8DA_IIIA%20-%20NUEVO.pdf"},
+    {"codigo": "A-IIIb", "clase": "A", "categoria": "III-B", "tipo": "profesional", "nombre": "Clase A Categoria III-B", "vehiculos": "Combinaciones especiales y remolques", "preguntas_examen": 40, "minimo_aprobatorio": 35, "duracion_minutos": 40, "topicos": ["SENIALES","CIRCULACION","VELOCIDAD","INFRACCIONES","DOCUMENTOS","SEGURIDAD","MECANICA","AUXILIOS","AMBIENTE","MERCANCIAS"], "pdf": "https://portal.mtc.gob.pe/transportes/terrestre/licencias/documentos/licencias/CLASE_A_CATEGOR%C3%8DA_IIIB%20-%20NUEVO.pdf"},
+    {"codigo": "A-IIIc", "clase": "A", "categoria": "III-C", "tipo": "profesional", "nombre": "Clase A Categoria III-C", "vehiculos": "Todas las categorias de la clase A, incluye materiales y residuos peligrosos", "preguntas_examen": 40, "minimo_aprobatorio": 35, "duracion_minutos": 40, "topicos": ["SENIALES","CIRCULACION","VELOCIDAD","INFRACCIONES","DOCUMENTOS","SEGURIDAD","MECANICA","AUXILIOS","AMBIENTE","TRANSPORTE_PERSONAS","MERCANCIAS"], "pdf": "https://portal.mtc.gob.pe/transportes/terrestre/licencias/documentos/licencias/CLASE_A_CATEGOR%C3%8DA_IIIC%20-%20NUEVO.pdf"},
+    {"codigo": "B-IIa", "clase": "B", "categoria": "II-A", "tipo": "vehiculos menores", "nombre": "Clase B Categoria II-A", "vehiculos": "Vehiculos menores de carga", "preguntas_examen": 35, "minimo_aprobatorio": 30, "duracion_minutos": 40, "topicos": ["SENIALES","CIRCULACION","VELOCIDAD","INFRACCIONES","DOCUMENTOS","SEGURIDAD","AUXILIOS","MOTOS"], "pdf": "https://www.gob.pe/institucion/mtc/informes-publicaciones/1928110-examen-de-conocimientos-para-postulantes-a-licencias-de-conducir"},
+    {"codigo": "B-IIb", "clase": "B", "categoria": "II-B", "tipo": "vehiculos menores", "nombre": "Clase B Categoria II-B", "vehiculos": "Motocicletas de dos ruedas o con sidecar", "preguntas_examen": 40, "minimo_aprobatorio": 35, "duracion_minutos": 40, "topicos": ["SENIALES","CIRCULACION","VELOCIDAD","INFRACCIONES","DOCUMENTOS","SEGURIDAD","AUXILIOS","MOTOS"], "pdf": "https://www.gob.pe/institucion/mtc/informes-publicaciones/1928110-examen-de-conocimientos-para-postulantes-a-licencias-de-conducir"},
+    {"codigo": "B-IIc", "clase": "B", "categoria": "II-C", "tipo": "vehiculos menores", "nombre": "Clase B Categoria II-C", "vehiculos": "Mototaxis, trimotos y vehiculos de las categorias B-IIa y B-IIb", "preguntas_examen": 40, "minimo_aprobatorio": 35, "duracion_minutos": 40, "topicos": ["SENIALES","CIRCULACION","VELOCIDAD","INFRACCIONES","DOCUMENTOS","SEGURIDAD","AUXILIOS","MOTOS"], "pdf": "https://www.gob.pe/institucion/mtc/informes-publicaciones/1928110-examen-de-conocimientos-para-postulantes-a-licencias-de-conducir"}
+  ]
+}

@@ -1,0 +1,36 @@
+name: simulacro_mtc
+description: Simulacro del examen de conocimientos del MTC con feedback por categoria.
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.4.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_bloc: ^8.1.6
+  bloc: ^8.1.4
+  rxdart: ^0.28.0
+  equatable: ^2.0.5
+  dartz: ^0.10.1
+  get_it: ^7.7.0
+  shared_preferences: ^2.3.2
+  sqflite: ^2.3.3
+  path: ^1.9.0
+  http: ^1.2.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  bloc_test: ^9.1.7
+  mocktail: ^1.0.4
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/balotarios/
+    - assets/icons/
+    - assets/icons/app_icon.png
+    - assets/senales/A-I/
