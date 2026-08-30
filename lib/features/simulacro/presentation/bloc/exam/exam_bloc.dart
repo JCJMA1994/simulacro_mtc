@@ -71,7 +71,10 @@ final class ExamBloc extends Bloc<ExamEvent, ExamState> {
     emit(state.copyWith(status: ExamStatus.cargando));
 
     final resultado = await _iniciarSimulacro(
-      IniciarSimulacroParams(categoriaCodigo: evento.categoriaCodigo),
+      IniciarSimulacroParams(
+        categoriaCodigo: evento.categoriaCodigo,
+        soloFalladas: evento.soloFalladas,
+      ),
     );
 
     resultado.fold(

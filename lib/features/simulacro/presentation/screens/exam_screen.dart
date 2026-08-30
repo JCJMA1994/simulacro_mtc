@@ -14,10 +14,12 @@ class ExamScreen extends StatelessWidget {
     super.key,
     required this.categoriaCodigo,
     this.sesionPrevia,
+    this.soloFalladas = false,
   });
 
   final String categoriaCodigo;
   final ExamSession? sesionPrevia;
+  final bool soloFalladas;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +29,7 @@ class ExamScreen extends StatelessWidget {
         if (sesionPrevia != null) {
           bloc.add(const SimulacroReanudado());
         } else {
-          bloc.add(SimulacroIniciado(categoriaCodigo));
+          bloc.add(SimulacroIniciado(categoriaCodigo, soloFalladas: soloFalladas));
         }
         return bloc;
       },

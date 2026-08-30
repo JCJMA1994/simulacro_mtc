@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../../../../injection_container.dart';
@@ -6,6 +7,7 @@ import '../../../simulacro/domain/entities/license_category.dart';
 import '../../../simulacro/domain/entities/question.dart';
 import '../../../simulacro/domain/usecases/obtener_balotario.dart';
 import '../../../simulacro/domain/usecases/obtener_categorias.dart';
+import '../widgets/flashcard_view.dart';
 import '../widgets/study_question_card.dart';
 
 class BalotarioScreen extends StatefulWidget {
@@ -22,6 +24,8 @@ class _BalotarioScreenState extends State<BalotarioScreen> {
   bool _cargando = true;
   String _topicoFiltro = 'TODOS';
   String _busqueda = '';
+  bool _modoFlashcard = false;
+  bool _soloSenales = false;
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -87,14 +91,15 @@ class _BalotarioScreenState extends State<BalotarioScreen> {
     }
     final topicos = topicosSet.toList();
 
-    // Filtrar preguntas por tópico y búsqueda
+    // Filtrar preguntas por tópico, búsqueda y señales
     final preguntasFiltradas = _preguntas.where((p) {
       final coincideTopico = _topicoFiltro == 'TODOS' || p.topicoCodigo == _topicoFiltro;
       final coincideBusqueda = _busqueda.isEmpty ||
           p.enunciado.toLowerCase().contains(_busqueda.toLowerCase()) ||
           p.opciones.any((op) => op.toLowerCase().contains(_busqueda.toLowerCase())) ||
           '${p.numero}'.contains(_busqueda);
-      return coincideTopico && coincideBusqueda;
+      final coincideSenales = !_soloSenales || p.imagenAsset != null || p.topicoCodigo == 'SENIALES';
+      return coincideTopico && coincideBusqueda && coincideSenales;
     }).toList();
 
     return Scaffold(
@@ -201,49 +206,128 @@ class _BalotarioScreenState extends State<BalotarioScreen> {
               ),
             ),
 
-            // Buscador estilizado
+            // Controles de Modo (Lista vs Flashcard) y Filtro Rápido de Señales
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
-              child: TextField(
-                controller: _searchController,
-                decoration: InputDecoration(
-                  hintText: 'Buscar por palabra clave o número...',
-                  hintStyle: const TextStyle(fontSize: 13, color: AppColors.textSecondary),
-                  prefixIcon: const Icon(Icons.search_rounded, color: AppColors.primary, size: 20),
-                  suffixIcon: _busqueda.isNotEmpty
-                      ? IconButton(
-                          icon: const Icon(Icons.clear_rounded, size: 18),
-                          onPressed: () {
-                            _searchController.clear();
-                            setState(() => _busqueda = '');
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+              child: Row(
+                children: [
+                  // Segmented control: Lista vs Flashcards
+                  Container(
+                    padding: const EdgeInsets.all(3),
+                    decoration: BoxDecoration(
+                      color: AppColors.surface,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: AppColors.border),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _ModeButton(
+                          icon: Icons.view_list_rounded,
+                          label: 'Lista',
+                          selected: !_modoFlashcard,
+                          onTap: () {
+                            HapticFeedback.selectionClick();
+                            setState(() => _modoFlashcard = false);
                           },
-                        )
-                      : null,
-                  filled: true,
-                  fillColor: AppColors.surface,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(color: AppColors.border),
+                        ),
+                        _ModeButton(
+                          icon: Icons.style_rounded,
+                          label: 'Flashcards',
+                          selected: _modoFlashcard,
+                          onTap: () {
+                            HapticFeedback.selectionClick();
+                            setState(() => _modoFlashcard = true);
+                          },
+                        ),
+                      ],
+                    ),
                   ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(color: AppColors.border),
+                  const SizedBox(width: 8),
+
+                  // Chip filtro de señales
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: FilterChip(
+                        selected: _soloSenales,
+                        showCheckmark: false,
+                        avatar: Icon(
+                          Icons.traffic_rounded,
+                          size: 16,
+                          color: _soloSenales ? Colors.white : const Color(0xFF0284C7),
+                        ),
+                        label: Text(
+                          'Solo Señales',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: _soloSenales ? Colors.white : AppColors.textPrimary,
+                          ),
+                        ),
+                        backgroundColor: AppColors.surface,
+                        selectedColor: const Color(0xFF0F52BA),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          side: BorderSide(
+                            color: _soloSenales ? const Color(0xFF0F52BA) : AppColors.border,
+                          ),
+                        ),
+                        onSelected: (val) {
+                          HapticFeedback.selectionClick();
+                          setState(() => _soloSenales = val);
+                        },
+                      ),
+                    ),
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
-                  ),
-                ),
-                onChanged: (val) => setState(() => _busqueda = val),
+                ],
               ),
             ),
+
+            // Buscador estilizado (en modo lista)
+            if (!_modoFlashcard)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    hintText: 'Buscar por palabra clave o número...',
+                    hintStyle: const TextStyle(fontSize: 13, color: AppColors.textSecondary),
+                    prefixIcon: const Icon(Icons.search_rounded, color: AppColors.primary, size: 20),
+                    suffixIcon: _busqueda.isNotEmpty
+                        ? IconButton(
+                            icon: const Icon(Icons.clear_rounded, size: 18),
+                            onPressed: () {
+                              _searchController.clear();
+                              setState(() => _busqueda = '');
+                            },
+                          )
+                        : null,
+                    filled: true,
+                    fillColor: AppColors.surface,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: const BorderSide(color: AppColors.border),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: const BorderSide(color: AppColors.border),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+                    ),
+                  ),
+                  onChanged: (val) => setState(() => _busqueda = val),
+                ),
+              ),
 
             // Chips de Tópicos con colores vivos
             if (topicos.length > 1)
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
                 child: Row(
                   children: topicos.map((topico) {
                     final esSeleccionado = _topicoFiltro == topico;
@@ -251,7 +335,10 @@ class _BalotarioScreenState extends State<BalotarioScreen> {
                       padding: const EdgeInsets.only(right: 8),
                       child: InkWell(
                         borderRadius: BorderRadius.circular(20),
-                        onTap: () => setState(() => _topicoFiltro = topico),
+                        onTap: () {
+                          HapticFeedback.selectionClick();
+                          setState(() => _topicoFiltro = topico);
+                        },
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 200),
                           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
@@ -289,7 +376,7 @@ class _BalotarioScreenState extends State<BalotarioScreen> {
 
             const Divider(height: 1, color: AppColors.divider),
 
-            // Lista de preguntas
+            // Contenido: Lista o Flashcards
             Expanded(
               child: _cargando
                   ? const Center(
@@ -310,7 +397,7 @@ class _BalotarioScreenState extends State<BalotarioScreen> {
                                   color: AppColors.textSecondary,
                                 ),
                               ),
-                              if (_busqueda.isNotEmpty || _topicoFiltro != 'TODOS') ...[
+                              if (_busqueda.isNotEmpty || _topicoFiltro != 'TODOS' || _soloSenales) ...[
                                 const SizedBox(height: 12),
                                 TextButton(
                                   onPressed: () {
@@ -318,6 +405,7 @@ class _BalotarioScreenState extends State<BalotarioScreen> {
                                     setState(() {
                                       _busqueda = '';
                                       _topicoFiltro = 'TODOS';
+                                      _soloSenales = false;
                                     });
                                   },
                                   child: const Text('Limpiar filtros'),
@@ -326,17 +414,65 @@ class _BalotarioScreenState extends State<BalotarioScreen> {
                             ],
                           ),
                         )
-                      : ListView.builder(
-                          padding: const EdgeInsets.all(16),
-                          itemCount: preguntasFiltradas.length,
-                          itemBuilder: (context, index) {
-                            return StudyQuestionCard(
-                              key: ValueKey(preguntasFiltradas[index].id),
-                              pregunta: preguntasFiltradas[index],
-                              indiceLista: index + 1,
-                            );
-                          },
-                        ),
+                      : _modoFlashcard
+                          ? FlashcardView(preguntas: preguntasFiltradas)
+                          : ListView.builder(
+                              padding: const EdgeInsets.all(16),
+                              itemCount: preguntasFiltradas.length,
+                              itemBuilder: (context, index) {
+                                return StudyQuestionCard(
+                                  key: ValueKey(preguntasFiltradas[index].id),
+                                  pregunta: preguntasFiltradas[index],
+                                  indiceLista: index + 1,
+                                );
+                              },
+                            ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ModeButton extends StatelessWidget {
+  const _ModeButton({
+    required this.icon,
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: selected ? const Color(0xFF0F52BA) : Colors.transparent,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              size: 16,
+              color: selected ? Colors.white : AppColors.textSecondary,
+            ),
+            const SizedBox(width: 5),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
+                color: selected ? Colors.white : AppColors.textSecondary,
+              ),
             ),
           ],
         ),

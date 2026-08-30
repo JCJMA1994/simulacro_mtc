@@ -4,6 +4,7 @@ import '../../../../core/usecases/usecase.dart';
 import '../../../../injection_container.dart';
 import '../../domain/entities/exam_session.dart';
 import '../../domain/entities/license_category.dart';
+import '../../domain/repositories/attempt_repository.dart';
 import '../../domain/repositories/session_repository.dart';
 import '../../domain/usecases/obtener_categorias.dart';
 import 'exam_screen.dart';
@@ -94,16 +95,34 @@ class _CatalogScreenState extends State<CatalogScreen> {
     });
   }
 
-  void _mostrarDetalleCategoria(LicenseCategory categoria) {
+  Future<void> _mostrarDetalleCategoria(LicenseCategory categoria) async {
+    final attemptRepo = sl<AttemptRepository>();
+    final falladasRes = await attemptRepo.preguntasFalladas(categoria.codigo);
+    final totalFalladas = falladasRes.fold((_) => 0, (list) => list.length);
+
+    if (!mounted) return;
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => _CategoryDetailSheet(
         categoria: categoria,
+        totalFalladas: totalFalladas,
         onStartExam: () {
           Navigator.of(context).pop();
           _iniciarExamen(categoria);
+        },
+        onStartReviewErrors: () {
+          Navigator.of(context).pop();
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => ExamScreen(
+                categoriaCodigo: categoria.codigo,
+                soloFalladas: true,
+              ),
+            ),
+          ).then((_) => _cargarDatos());
         },
       ),
     );
@@ -575,10 +594,14 @@ class _CategoryDetailSheet extends StatelessWidget {
   const _CategoryDetailSheet({
     required this.categoria,
     required this.onStartExam,
+    required this.onStartReviewErrors,
+    this.totalFalladas = 0,
   });
 
   final LicenseCategory categoria;
   final VoidCallback onStartExam;
+  final VoidCallback onStartReviewErrors;
+  final int totalFalladas;
 
   @override
   Widget build(BuildContext context) {
@@ -705,6 +728,21 @@ class _CategoryDetailSheet extends StatelessWidget {
               onPressed: onStartExam,
               child: const Text('Iniciar Simulacro Oficial'),
             ),
+
+            if (totalFalladas > 0) ...[
+              const SizedBox(height: 10),
+              OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: const Color(0xFFDC2626),
+                  side: const BorderSide(color: Color(0xFFFCA5A5)),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                onPressed: onStartReviewErrors,
+                icon: const Icon(Icons.replay_rounded, size: 18),
+                label: Text('Practicar $totalFalladas preguntas falladas'),
+              ),
+            ],
           ],
         ),
       ),

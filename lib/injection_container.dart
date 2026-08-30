@@ -54,7 +54,7 @@ Future<void> init() async {
 
     // Casos de uso
     ..registerLazySingleton(() => ObtenerCategorias(sl()))
-    ..registerLazySingleton(() => IniciarSimulacro(sl()))
+    ..registerLazySingleton(() => IniciarSimulacro(sl(), attemptRepository: sl()))
     ..registerLazySingleton(() => ReanudarSimulacro(sl(), sl()))
     ..registerLazySingleton(() => AutoguardarSesion(sl()))
     ..registerLazySingleton(() => const CalcularFeedback())

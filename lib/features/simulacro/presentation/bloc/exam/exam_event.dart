@@ -8,11 +8,12 @@ sealed class ExamEvent extends Equatable {
 }
 
 final class SimulacroIniciado extends ExamEvent {
-  const SimulacroIniciado(this.categoriaCodigo);
+  const SimulacroIniciado(this.categoriaCodigo, {this.soloFalladas = false});
   final String categoriaCodigo;
+  final bool soloFalladas;
 
   @override
-  List<Object?> get props => [categoriaCodigo];
+  List<Object?> get props => [categoriaCodigo, soloFalladas];
 }
 
 /// Se dispara al abrir la app: si hay una sesion interrumpida, la restaura.

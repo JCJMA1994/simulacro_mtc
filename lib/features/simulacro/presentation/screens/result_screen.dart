@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../domain/entities/exam_result.dart';
 import '../../domain/entities/exam_session.dart';
 import '../widgets/topic_feedback_item.dart';
 import 'review_screen.dart';
 
-class ResultScreen extends StatelessWidget {
+class ResultScreen extends StatefulWidget {
   const ResultScreen({
     super.key,
     required this.resultado,
@@ -17,6 +17,23 @@ class ResultScreen extends StatelessWidget {
   final ExamSession sesion;
   final VoidCallback onRestart;
 
+  @override
+  State<ResultScreen> createState() => _ResultScreenState();
+}
+
+class _ResultScreenState extends State<ResultScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.resultado.aprobado) {
+        HapticFeedback.heavyImpact();
+      } else {
+        HapticFeedback.mediumImpact();
+      }
+    });
+  }
+
   String _formatearTiempo(Duration duracion) {
     final minutos = duracion.inMinutes.remainder(60).toString().padLeft(2, '0');
     final segundos = duracion.inSeconds.remainder(60).toString().padLeft(2, '0');
@@ -25,6 +42,9 @@ class ResultScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final resultado = widget.resultado;
+    final sesion = widget.sesion;
+    final onRestart = widget.onRestart;
     final aprobado = resultado.aprobado;
     final colorResultado = aprobado ? AppColors.success : AppColors.error;
     final iconoResultado = aprobado ? Icons.check_circle_rounded : Icons.cancel_rounded;

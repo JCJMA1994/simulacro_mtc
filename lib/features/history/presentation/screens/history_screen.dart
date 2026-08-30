@@ -287,6 +287,12 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         ],
                       ),
                     ),
+                    // Gráfico de Evolución de Puntajes
+                    if (_intentos.isNotEmpty) ...[
+                      const SizedBox(height: 18),
+                      _ScoreTrendCard(intentos: _intentos),
+                    ],
+
                     const SizedBox(height: 24),
 
                     // Historial de Intentos
@@ -491,3 +497,144 @@ class _StatBox extends StatelessWidget {
     );
   }
 }
+
+class _ScoreTrendCard extends StatelessWidget {
+  const _ScoreTrendCard({required this.intentos});
+
+  final List<ExamResult> intentos;
+
+  @override
+  Widget build(BuildContext context) {
+    // Tomar los últimos 8 intentos y ordenarlos cronológicamente (más antiguo a más nuevo)
+    final recientes = intentos.take(8).toList().reversed.toList();
+    if (recientes.isEmpty) return const SizedBox.shrink();
+
+    final ultimosAprobados = intentos.take(3).where((i) => i.aprobado).length == 3 && intentos.length >= 3;
+
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.border),
+        boxShadow: AppColors.cardShadow,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Row(
+                children: [
+                  Icon(Icons.show_chart_rounded, size: 20, color: AppColors.primary),
+                  SizedBox(width: 8),
+                  Text(
+                    'Curva de Puntajes',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                ],
+              ),
+              if (ultimosAprobados)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFDCFCE7),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: const Text(
+                    '¡Listo para el Touring!',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w800,
+                      color: Color(0xFF15803D),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          // Barras de puntaje
+          SizedBox(
+            height: 110,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: recientes.asMap().entries.map((entry) {
+                final idx = entry.key;
+                final intento = entry.value;
+                final maximo = intento.total > 0 ? intento.total : 40;
+                final proporcion = (intento.correctas / maximo).clamp(0.0, 1.0);
+                final aprobado = intento.aprobado;
+                final color = aprobado ? const Color(0xFF16A34A) : const Color(0xFFDC2626);
+
+                return Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          '${intento.correctas}',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w800,
+                            color: color,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Container(
+                          height: (80 * proporcion).clamp(8.0, 80.0),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: aprobado
+                                  ? [const Color(0xFF22C55E), const Color(0xFF16A34A)]
+                                  : [const Color(0xFFF87171), const Color(0xFFDC2626)],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                            ),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          '#${idx + 1}',
+                          style: const TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+          const SizedBox(height: 10),
+          const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.info_outline_rounded, size: 13, color: AppColors.textSecondary),
+              SizedBox(width: 5),
+              Text(
+                'Aprobación requerida: 35/40 (o 30/35 en B-IIa)',
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+

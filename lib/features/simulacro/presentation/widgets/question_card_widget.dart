@@ -124,7 +124,10 @@ class QuestionCardWidget extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 12),
               child: InkWell(
                 borderRadius: BorderRadius.circular(12),
-                onTap: () => onSelectOption(index),
+                onTap: () {
+                  HapticFeedback.selectionClick();
+                  onSelectOption(index);
+                },
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
                   padding: const EdgeInsets.all(14),
