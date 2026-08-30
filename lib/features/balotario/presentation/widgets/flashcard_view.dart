@@ -283,7 +283,7 @@ class _FlashcardViewState extends State<FlashcardView> {
                                         ],
                                       ),
                                     ),
-                                    if (p.explicacion.isNotEmpty) ...[
+                                    if (p.explicacion != null && p.explicacion!.isNotEmpty) ...[
                                       const SizedBox(height: 10),
                                       Container(
                                         padding: const EdgeInsets.all(12),
