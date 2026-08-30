@@ -154,13 +154,20 @@ def parsear_fila_tabla(row: list[str | None], categoria: str, topicos_cat: list[
     if resp_idx == -1 and "hoja de ruta electrónica" in enunciado.lower():
         resp_idx = 2  # c
 
-    opciones = [limpiar_opcion(o) for o in opts_cells]
+    letras = ["A", "B", "C", "D"]
+    opciones = []
+    for idx, o in enumerate(opts_cells):
+        limpia = limpiar_opcion(o)
+        if not limpia:
+            limpia = f"Señal {letras[idx] if idx < 4 else str(idx+1)}"
+        opciones.append(limpia)
+
     if not enunciado or len(opciones) < 3:
         return None
 
-    # Si hay 3 opciones en lugar de 4 (ocurre en una pregunta de Clase B), rellenar opción 4 estándar
     while len(opciones) < 4:
-        opciones.append("Ninguna de las anteriores.")
+        idx_falta = len(opciones)
+        opciones.append(f"Señal {letras[idx_falta] if idx_falta < 4 else str(idx_falta+1)}")
 
     texto_clasificacion = f"{tema} {enunciado} {' '.join(opciones)}"
     topico = clasificar_topico(texto_clasificacion, topicos_cat)

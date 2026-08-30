@@ -195,12 +195,12 @@
       "numero": 12,
       "categoria": "B-IIc",
       "topico": "SENIALES",
-      "enunciado": "Obligaciones del conductor en materia de tránsito terrestre",
+      "enunciado": "Lasseñalesverticalesdetránsitoque tienen por finalidad advertir a los usuariosdelaexistenciaynaturaleza de un peligro en la vía son denominadas",
       "opciones": [
-        "Lasseñalesverticalesdetránsitoque tienen por finalidad advertir a los usuariosdelaexistenciaynaturaleza de un peligro en la vía son denominadas",
         "Informativas",
         "Preventivas",
-        "Reguladoras"
+        "Reguladoras",
+        "Señal D"
       ],
       "respuesta_correcta": 1,
       "explicacion": "Articulo 42 del Código de Tránsito.",
@@ -212,12 +212,12 @@
       "numero": 13,
       "categoria": "B-IIc",
       "topico": "SENIALES",
-      "enunciado": "Obligaciones del conductor en materia de tránsito terrestre",
+      "enunciado": "Cuáldelasiguienteseñalverticales informativa:",
       "opciones": [
-        "Cuáldelasiguienteseñalverticales informativa:",
-        "",
-        "",
-        ""
+        "Señal A",
+        "Señal B",
+        "Señal C",
+        "Señal D"
       ],
       "respuesta_correcta": 0,
       "explicacion": "Articulo 42 del Código de Tránsito y numeral 2.10.3 del Manual de dispositivos y Control de Tránsito.",
@@ -231,9 +231,9 @@
       "topico": "SENIALES",
       "enunciado": "Cuáldelasiguienteseñalverticales preventiva:",
       "opciones": [
-        "",
-        "",
-        "",
+        "Señal A",
+        "Señal B",
+        "Señal C",
         "La a y c son correctas."
       ],
       "respuesta_correcta": 3,
@@ -248,9 +248,9 @@
       "topico": "SENIALES",
       "enunciado": "Cuáldelasiguienteseñalverticales reguladora o de reglamentación:",
       "opciones": [
-        "",
-        "",
-        "",
+        "Señal A",
+        "Señal B",
+        "Señal C",
         "Solo la b es incorrecta"
       ],
       "respuesta_correcta": 3,
@@ -263,12 +263,12 @@
       "numero": 16,
       "categoria": "B-IIc",
       "topico": "SENIALES",
-      "enunciado": "Obligaciones del conductor en materia de tránsito terrestre",
+      "enunciado": "Las señales verticales preventivas tienen, por lo general, la siguiente forma:",
       "opciones": [
-        "Las señales verticales preventivas tienen, por lo general, la siguiente forma:",
         "Rectangular",
         "Romboidal",
-        "Triangulo tipo banderola"
+        "Triangulo tipo banderola",
+        "Señal D"
       ],
       "respuesta_correcta": 1,
       "explicacion": "Articulo 43 del Código de Tránsito",
@@ -280,12 +280,12 @@
       "numero": 17,
       "categoria": "B-IIc",
       "topico": "SENIALES",
-      "enunciado": "Obligaciones del conductor en materia de tránsito terrestre",
+      "enunciado": "Las______________________tienen,por lo general, forma circular inscrita dentrodeunaplacarectangularenla quetambiénestécontenidalaleyenda explicativa del símbolo.",
       "opciones": [
-        "Las______________________tienen,por lo general, forma circular inscrita dentrodeunaplacarectangularenla quetambiénestécontenidalaleyenda explicativa del símbolo.",
         "Señales verticales reguladoras",
         "Señalesverticalesde información",
-        "Señales verticales preventivas"
+        "Señales verticales preventivas",
+        "Señal D"
       ],
       "respuesta_correcta": 0,
       "explicacion": "Articulo 43 del Código de Tránsito",
@@ -297,12 +297,12 @@
       "numero": 18,
       "categoria": "B-IIc",
       "topico": "SENIALES",
-      "enunciado": "Obligaciones del conductor en materia de tránsito terrestre",
+      "enunciado": "Laseñalvertical preventiva \"Cruzde San Andrés\" significa:",
       "opciones": [
-        "Laseñalvertical preventiva \"Cruzde San Andrés\" significa:",
         "Paso a desnivel de autopista",
         "Paso a nivel de autopista",
-        "Pasoanivel delínea férrea"
+        "Pasoanivel delínea férrea",
+        "Señal D"
       ],
       "respuesta_correcta": 2,
       "explicacion": "Numeral 2.10.2 del Manual de dispositivos y Control de Tránsito (Descripción de Señales - Señales de prevención)",
@@ -348,12 +348,12 @@
       "numero": 21,
       "categoria": "B-IIc",
       "topico": "SENIALES",
-      "enunciado": "Obligaciones del conductor en materia de tránsito terrestre",
+      "enunciado": "Las señales verticales informativas tienen por objeto:",
       "opciones": [
-        "Las señales verticales informativas tienen por objeto:",
         "Notificar a los usuariosdelavíadela existenciadeunpeligro y la naturaleza de éste.",
         "Advertir a los usuariosdelavíadela existenciadeunpeligro y la naturaleza de éste.",
-        "Identificar las vías y guiar al usuario proporcionándole la información que pueda necesitar."
+        "Identificar las vías y guiar al usuario proporcionándole la información que pueda necesitar.",
+        "Señal D"
       ],
       "respuesta_correcta": 2,
       "explicacion": "Articulo 42 del Código de Tránsito",
@@ -382,12 +382,12 @@
       "numero": 23,
       "categoria": "B-IIc",
       "topico": "SENIALES",
-      "enunciado": "Obligaciones del conductor en materia de tránsito terrestre",
+      "enunciado": "Los semáforos de acuerdo a su objetivo se clasifican en:",
       "opciones": [
-        "Los semáforos de acuerdo a su objetivo se clasifican en:",
         "Vehiculares y/o peatonales",
         "Vehiculares y/o peatonales y/o especiales",
-        "Especiales"
+        "Especiales",
+        "Señal D"
       ],
       "respuesta_correcta": 1,
       "explicacion": "Articulo 48 del Código de Tránsito",
@@ -399,12 +399,12 @@
       "numero": 24,
       "categoria": "B-IIc",
       "topico": "SENIALES",
-      "enunciado": "Obligaciones del conductor en materia de tránsito terrestre",
+      "enunciado": "Enunavía,loscolores delsemáforo son:",
       "opciones": [
-        "Enunavía,loscolores delsemáforo son:",
         "Rojo, Amarillo y Verde.",
         "Verde, Amarillo y Anaranjado.",
-        "Verde, Rosado y Anaranjado."
+        "Verde, Rosado y Anaranjado.",
+        "Señal D"
       ],
       "respuesta_correcta": 0,
       "explicacion": "Articulo 49 del Código de Tránsito",

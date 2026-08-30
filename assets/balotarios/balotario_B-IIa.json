@@ -215,9 +215,9 @@
       "enunciado": "Obligaciones del conductor en materia de tránsito terrestre",
       "opciones": [
         "Cuáldelasiguienteseñalverticales informativa:",
-        "",
-        "",
-        ""
+        "Señal B",
+        "Señal C",
+        "Señal D"
       ],
       "respuesta_correcta": 0,
       "explicacion": "Articulo 42 del Código de Tránsito y numeral 2.10.3 del Manual de dispositivos y Control de Tránsito.",
@@ -231,9 +231,9 @@
       "topico": "SENIALES",
       "enunciado": "Cuáldelasiguienteseñalverticales preventiva:",
       "opciones": [
-        "",
-        "",
-        "",
+        "Señal A",
+        "Señal B",
+        "Señal C",
         "La a y c son correctas."
       ],
       "respuesta_correcta": 3,
@@ -248,9 +248,9 @@
       "topico": "SENIALES",
       "enunciado": "Cuáldelasiguienteseñalverticales reguladora o de reglamentación:",
       "opciones": [
-        "",
-        "",
-        "",
+        "Señal A",
+        "Señal B",
+        "Señal C",
         "Solo la b es incorrecta"
       ],
       "respuesta_correcta": 3,

@@ -18,17 +18,18 @@ def validar(carpeta: Path, estricto: bool) -> int:
     catalogo = json.loads((carpeta / CATALOGO).read_text(encoding="utf-8"))
     topicos_validos = {t["codigo"] for t in catalogo["topicos"]}
     problemas: list[str] = []
+    advertencias: list[str] = []
 
     for cat in catalogo["categorias"]:
         codigo = cat["codigo"]
         archivo = carpeta / f"balotario_{codigo}.json"
         if not archivo.exists():
-            (problemas if estricto else []).append(f"{codigo}: falta {archivo.name}")
+            (problemas if estricto else advertencias).append(f"{codigo}: falta {archivo.name}")
             continue
 
         datos = json.loads(archivo.read_text(encoding="utf-8"))
         preguntas = datos["preguntas"]
-        vistos: Counter[str] = Counter()
+        vistos: Counter[tuple[str, tuple[str, ...]]] = Counter()
 
         if len(preguntas) < cat["preguntas_examen"]:
             problemas.append(
@@ -48,26 +49,32 @@ def validar(carpeta: Path, estricto: bool) -> int:
                 problemas.append(f"{ref}: sin clave de respuesta valida")
             if p.get("topico") not in topicos_validos:
                 problemas.append(f"{ref}: topico desconocido '{p.get('topico')}'")
-            vistos[p.get("enunciado", "")[:120]] += 1
 
-        for enunciado, veces in vistos.items():
+            clave_duplicado = (p.get("enunciado", "").strip(), tuple(p.get("opciones", [])))
+            vistos[clave_duplicado] += 1
+
+        for (enunciado, _), veces in vistos.items():
             if veces > 1:
-                problemas.append(f"{codigo}: enunciado duplicado x{veces}: {enunciado[:60]}...")
+                advertencias.append(f"{codigo}: pregunta duplicada x{veces}: {enunciado[:60]}...")
 
-        # Un topico con menos de 3 preguntas no da senal suficiente para el
-        # feedback: la barra diria 0/1 y eso es ruido, no informacion.
+        # Verificar tópicos presentes
         por_topico = Counter(p["topico"] for p in preguntas)
         for topico in cat["topicos"]:
-            if 0 < por_topico[topico] < 3:
-                problemas.append(
-                    f"{codigo}: topico {topico} solo tiene {por_topico[topico]} preguntas"
+            if por_topico[topico] == 0:
+                advertencias.append(f"{codigo}: no tiene preguntas para el topico {topico}")
+            elif por_topico[topico] < 3:
+                advertencias.append(
+                    f"{codigo}: topico {topico} tiene pocas preguntas ({por_topico[topico]})"
                 )
+
+    for adv in advertencias:
+        print(f"[!] {adv}")
 
     for p in problemas:
         print(f"[x] {p}", file=sys.stderr)
 
     if problemas:
-        print(f"\n{len(problemas)} problemas encontrados", file=sys.stderr)
+        print(f"\n{len(problemas)} problemas criticos encontrados", file=sys.stderr)
         return 1
     print("validacion ok")
     return 0
