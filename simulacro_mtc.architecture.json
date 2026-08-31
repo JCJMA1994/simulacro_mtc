@@ -1,0 +1,213 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Simulacro MTC - Arquitectura del Sistema",
+    "output": "simulacro-mtc-architecture.html",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "mobile-app",
+        "label": "App Móvil Flutter (Clean Arch)",
+        "focus": ["flutter_ui", "local_storage", "feedback_engine"],
+        "note": "Arquitectura limpia offline-first con BLoC, persistencia local y motor de feedback puro."
+      },
+      {
+        "id": "pipeline-ingestion",
+        "label": "Pipeline de Ingestión",
+        "focus": ["mtc_portal", "pipeline", "assets"],
+        "note": "Extracción automatizada de balotarios y generación de assets JSON estables."
+      },
+      {
+        "id": "backend-sync",
+        "label": "Backend FastAPI y Base de Datos",
+        "focus": ["flutter_ui", "fastapi", "postgres"],
+        "note": "Servicio REST para sincronización de versiones y simulacros ponderados."
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "mtc_portal",
+      "type": "external",
+      "label": "Portal MTC Perú",
+      "sublabel": "PDFs Oficiales",
+      "pos": [40, 100],
+      "size": [150, 60]
+    },
+    {
+      "id": "pipeline",
+      "type": "backend",
+      "label": "Pipeline Python",
+      "sublabel": "tools/ (pdfplumber)",
+      "pos": [40, 260],
+      "size": [150, 60],
+      "tag": "scraping"
+    },
+    {
+      "id": "assets",
+      "type": "database",
+      "label": "Assets Balotarios",
+      "sublabel": "JSON + Imágenes",
+      "pos": [40, 420],
+      "size": [150, 60],
+      "tag": "assets/"
+    },
+    {
+      "id": "flutter_ui",
+      "type": "frontend",
+      "label": "Flutter App",
+      "sublabel": "BLoC + Presentation",
+      "pos": [290, 100],
+      "size": [160, 60],
+      "tag": "lib/"
+    },
+    {
+      "id": "local_storage",
+      "type": "database",
+      "label": "Storage Local",
+      "sublabel": "SQLite / Prefs",
+      "pos": [290, 260],
+      "size": [160, 60],
+      "tag": "offline-first"
+    },
+    {
+      "id": "feedback_engine",
+      "type": "backend",
+      "label": "Motor de Feedback",
+      "sublabel": "12 Tópicos de Dominio",
+      "pos": [290, 420],
+      "size": [160, 60],
+      "tag": "domain/"
+    },
+    {
+      "id": "fastapi",
+      "type": "backend",
+      "label": "API FastAPI",
+      "sublabel": "api/app :8000",
+      "pos": [540, 100],
+      "size": [150, 60],
+      "tag": "backend"
+    },
+    {
+      "id": "postgres",
+      "type": "database",
+      "label": "PostgreSQL",
+      "sublabel": "db/ (Simulacros)",
+      "pos": [540, 260],
+      "size": [150, 60],
+      "tag": "database"
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Ingestion Pipeline (tools/)",
+      "wraps": ["mtc_portal", "pipeline", "assets"]
+    },
+    {
+      "kind": "region",
+      "label": "Mobile App (lib/)",
+      "wraps": ["flutter_ui", "local_storage", "feedback_engine"]
+    },
+    {
+      "kind": "region",
+      "label": "Cloud Backend (api/ & db/)",
+      "wraps": ["fastapi", "postgres"]
+    }
+  ],
+  "connections": [
+    {
+      "id": "mtc-to-pipeline",
+      "from": "mtc_portal",
+      "to": "pipeline",
+      "label": "fuente PDF",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelAt": [115, 210]
+    },
+    {
+      "id": "pipeline-to-assets",
+      "from": "pipeline",
+      "to": "assets",
+      "label": "emite JSON",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelAt": [115, 370]
+    },
+    {
+      "id": "assets-to-app",
+      "from": "assets",
+      "to": "flutter_ui",
+      "label": "bundled",
+      "fromSide": "right",
+      "toSide": "left",
+      "via": [[235, 450], [235, 130]],
+      "labelAt": [235, 290]
+    },
+    {
+      "id": "app-to-storage",
+      "from": "flutter_ui",
+      "to": "local_storage",
+      "label": "persiste",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelAt": [370, 210]
+    },
+    {
+      "id": "storage-to-feedback",
+      "from": "local_storage",
+      "to": "feedback_engine",
+      "label": "evalúa",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelAt": [370, 370]
+    },
+    {
+      "id": "app-to-api",
+      "from": "flutter_ui",
+      "to": "fastapi",
+      "label": "sync REST",
+      "fromSide": "right",
+      "toSide": "left"
+    },
+    {
+      "id": "api-to-db",
+      "from": "fastapi",
+      "to": "postgres",
+      "label": "SQL",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelAt": [615, 210]
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Ingestión y Balotarios",
+      "items": [
+        "Extracción reproducible de PDFs oficiales del MTC",
+        "Claves estables generadas por sha1 del enunciado",
+        "Exportación a JSON y catálogo de 9 categorías"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "App Móvil Offline-First",
+      "items": [
+        "Clean Architecture con BLoC y Ticker desacoplado",
+        "Persistencia local de sesión e historial de intentos",
+        "Cálculo puro de feedback por tópico y punto débil"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Sincronización Cloud",
+      "items": [
+        "FastAPI con soporte de ETag y manifiesto de versiones",
+        "Muestreo de simulacros ponderado por dominio de usuario",
+        "Almacenamiento relacional en PostgreSQL"
+      ]
+    }
+  ]
+}

@@ -55,3 +55,9 @@ __pycache__/
 *$py.class
 .venv/
 env/
+
+# Agents & local tools
+.agents/
+
+# Archify visual check test artifacts
+*.visual-check.*
